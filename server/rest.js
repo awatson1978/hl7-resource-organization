@@ -3,11 +3,13 @@
 //==========================================================================================
 // Global Configs  
 
+var fhirVersion = 'fhir-3.0.0';
 
 if(typeof oAuth2Server === 'object'){
   // TODO:  double check that this is needed; and that the /api/ route is correct
   JsonRoutes.Middleware.use(
-    '/api/*',
+    // '/api/*',
+    '/fhir-3.0.0/*',
     oAuth2Server.oauthserver.authorise()   // OAUTH FLOW - A7.1
   );
 }
@@ -57,7 +59,7 @@ JsonRoutes.sendResult = function (res, options) {
 //==========================================================================================
 // Step 1 - Create New Organization  
 
-JsonRoutes.add("put", "/fhir-1.6.0/Organization/:id", function (req, res, next) {
+JsonRoutes.add("put", "/" + fhirVersion + "/Organization/:id", function (req, res, next) {
   process.env.DEBUG && console.log('PUT /fhir-1.6.0/Organization/' + req.params.id);
   //process.env.DEBUG && console.log('PUT /fhir-1.6.0/Organization/' + req.query._count);
 
@@ -198,7 +200,7 @@ JsonRoutes.add("put", "/fhir-1.6.0/Organization/:id", function (req, res, next) 
 //==========================================================================================
 // Step 2 - Read Organization  
 
-JsonRoutes.add("get", "/fhir-1.6.0/Organization/:id", function (req, res, next) {
+JsonRoutes.add("get", "/" + fhirVersion + "/Organization/:id", function (req, res, next) {
   process.env.DEBUG && console.log('GET /fhir-1.6.0/Organization/' + req.params.id);
 
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -252,7 +254,7 @@ JsonRoutes.add("get", "/fhir-1.6.0/Organization/:id", function (req, res, next) 
 //==========================================================================================
 // Step 3 - Update Organization  
 
-JsonRoutes.add("post", "/fhir-1.6.0/Organization", function (req, res, next) {
+JsonRoutes.add("post", "/" + fhirVersion + "/Organization", function (req, res, next) {
   process.env.DEBUG && console.log('POST /fhir/Organization/', JSON.stringify(req.body, null, 2));
 
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -351,7 +353,7 @@ JsonRoutes.add("post", "/fhir-1.6.0/Organization", function (req, res, next) {
 //==========================================================================================
 // Step 4 - OrganizationHistoryInstance
 
-JsonRoutes.add("get", "/fhir-1.6.0/Organization/:id/_history", function (req, res, next) {
+JsonRoutes.add("get", "/" + fhirVersion + "/Organization/:id/_history", function (req, res, next) {
   process.env.DEBUG && console.log('GET /fhir-1.6.0/Organization/', req.params);
   process.env.DEBUG && console.log('GET /fhir-1.6.0/Organization/', req.query._count);
 
@@ -406,7 +408,7 @@ JsonRoutes.add("get", "/fhir-1.6.0/Organization/:id/_history", function (req, re
 
 // NOTE:  We've not implemented _history functionality yet; so this endpoint is mostly a duplicate of Step 2.
 
-JsonRoutes.add("get", "/fhir-1.6.0/Organization/:id/_history/:versionId", function (req, res, next) {
+JsonRoutes.add("get", "/" + fhirVersion + "/Organization/:id/_history/:versionId", function (req, res, next) {
   process.env.DEBUG && console.log('GET /fhir-1.6.0/Organization/:id/_history/:versionId', req.params);
   //process.env.DEBUG && console.log('GET /fhir-1.6.0/Organization/:id/_history/:versionId', req.query._count);
 
@@ -516,7 +518,7 @@ generateDatabaseQuery = function(query){
   return databaseQuery;
 }
 
-JsonRoutes.add("get", "/fhir-1.6.0/Organization", function (req, res, next) {
+JsonRoutes.add("get", "/" + fhirVersion + "/Organization", function (req, res, next) {
   process.env.DEBUG && console.log('GET /fhir-1.6.0/Organization', req.query);
 
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -564,7 +566,7 @@ JsonRoutes.add("get", "/fhir-1.6.0/Organization", function (req, res, next) {
 //==========================================================================================
 // Step 6 - Organization Search Type  
 
-JsonRoutes.add("post", "/fhir-1.6.0/Organization/:param", function (req, res, next) {
+JsonRoutes.add("post", "/" + fhirVersion + "/Organization/:param", function (req, res, next) {
   process.env.DEBUG && console.log('POST /fhir-1.6.0/Organization/' + JSON.stringify(req.query));
 
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -628,7 +630,7 @@ JsonRoutes.add("post", "/fhir-1.6.0/Organization/:param", function (req, res, ne
 //==========================================================================================
 // Step 7 - Organization Delete    
 
-JsonRoutes.add("delete", "/fhir-1.6.0/Organization/:id", function (req, res, next) {
+JsonRoutes.add("delete", "/" + fhirVersion + "/Organization/:id", function (req, res, next) {
   process.env.DEBUG && console.log('DELETE /fhir-1.6.0/Organization/' + req.params.id);
 
   res.setHeader("Access-Control-Allow-Origin", "*");
