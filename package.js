@@ -1,6 +1,6 @@
 Package.describe({
   name: 'clinical:hl7-resource-organization',
-  version: '1.3.8',
+  version: '1.3.9',
   summary: 'HL7 FHIR Resource - Organization',
   git: 'https://github.com/clinical-meteor/hl7-resource-organization',
   documentation: 'README.md'
