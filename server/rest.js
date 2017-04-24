@@ -463,60 +463,33 @@ JsonRoutes.add("get", "/" + fhirVersion + "/Organization/:id/_history/:versionId
 
 
 
+//==========================================================================================
+// Step 6 - Organization Search Type  
+
+
+
 generateDatabaseQuery = function(query){
-  console.log("generateDatabaseQuery", query);
+  process.env.DEBUG && console.log("generateDatabaseQuery", query);
 
   var databaseQuery = {};
 
-  if (query.family) {
+   if (query.name) {
     databaseQuery['name'] = {
-      $elemMatch: {
-        'family': query.family
-      }
-    };
-  }
-  if (query.given) {
-    databaseQuery['name'] = {
-      $elemMatch: {
-        'given': query.given
-      }
-    };
-  }
-  if (query.name) {
-    databaseQuery['name'] = {
-      $elemMatch: {
-        'text': {
-          $regex: query.name,
-          $options: 'i'
-        }
-      }
+      $regex: query.name,
+      $options: 'i'
     };
   }
   if (query.identifier) {
-    databaseQuery['identifier'] = {
-      $elemMatch: {
-        'value': query.identifier
-      }
-    };
-  }
-  if (query.gender) {
-    databaseQuery['gender'] = query.gender;
-  }
-  if (query.birthdate) {
-    var dateArray = query.birthdate.split("-");
-    var minDate = dateArray[0] + "-" + dateArray[1] + "-" + (parseInt(dateArray[2])) + 'T00:00:00.000Z';
-    var maxDate = dateArray[0] + "-" + dateArray[1] + "-" + (parseInt(dateArray[2]) + 1) + 'T00:00:00.000Z';
-    console.log("minDateArray", minDate, maxDate);
+    var paramsArray = query.identifier.split('|');
+    process.env.DEBUG && console.log('paramsArray', paramsArray);
+    
+    databaseQuery['identifier.value'] = paramsArray[1]};
 
-    databaseQuery['birthDate'] = {
-      "$gte" : new Date(minDate),
-      "$lt" :  new Date(maxDate)
-    };
+    process.env.DEBUG && console.log('databaseQuery', databaseQuery);
+    return databaseQuery;
   }
 
-  process.env.DEBUG && console.log('databaseQuery', databaseQuery);
-  return databaseQuery;
-}
+
 
 JsonRoutes.add("get", "/" + fhirVersion + "/Organization", function (req, res, next) {
   process.env.DEBUG && console.log('GET /fhir-1.6.0/Organization', req.query);
@@ -538,11 +511,13 @@ JsonRoutes.add("get", "/" + fhirVersion + "/Organization", function (req, res, n
       var databaseQuery = generateDatabaseQuery(req.query);
 
       var payload = [];
-      var organizations = Organizations.find(databaseQuery);
+      var organizations = Organizations.find(databaseQuery).fetch();
+      process.env.DEBUG && console.log('organizations', organizations);
 
       organizations.forEach(function(record){
         payload.push(Organizations.prepForFhirTransfer(record));
       });
+      process.env.TRACE && console.log('payload', payload);
 
       // Success
       JsonRoutes.sendResult(res, {
@@ -563,8 +538,6 @@ JsonRoutes.add("get", "/" + fhirVersion + "/Organization", function (req, res, n
   }
 });
 
-//==========================================================================================
-// Step 6 - Organization Search Type  
 
 JsonRoutes.add("post", "/" + fhirVersion + "/Organization/:param", function (req, res, next) {
   process.env.DEBUG && console.log('POST /fhir-1.6.0/Organization/' + JSON.stringify(req.query));
@@ -594,7 +567,9 @@ JsonRoutes.add("post", "/" + fhirVersion + "/Organization/:param", function (req
         var databaseQuery = generateDatabaseQuery(req.query);
         process.env.DEBUG && console.log('databaseQuery', databaseQuery);
 
-        organizations = Organizations.find(databaseQuery, {limit: searchLimit});
+        organizations = Organizations.find(databaseQuery, {limit: searchLimit}).fetch();
+
+        process.env.DEBUG && console.log('organizations', organizations);
 
         var payload = [];
 
@@ -603,7 +578,7 @@ JsonRoutes.add("post", "/" + fhirVersion + "/Organization/:param", function (req
         });
       }
 
-      //process.env.TRACE && console.log('organizations', organizations);
+      process.env.TRACE && console.log('payload', payload);
 
       // Success
       JsonRoutes.sendResult(res, {
