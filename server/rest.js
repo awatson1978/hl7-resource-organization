@@ -622,9 +622,9 @@ JsonRoutes.add("delete", "/" + fhirVersion + "/Organization/:id", function (req,
       }
 
       if (Organizations.find({_id: req.params.id}).count() === 0) {
-        // Gone
+        // No Content
         JsonRoutes.sendResult(res, {
-          code: 410
+          code: 204
         });
       } else {
         Organizations.remove({_id: req.params.id}, function(error, result){
