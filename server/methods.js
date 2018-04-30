@@ -1,5 +1,5 @@
 Meteor.methods({
-    createOrganization:function(OrganizationObject){
+  createOrganization:function(OrganizationObject){
     check(OrganizationObject, Object);
 
     if (process.env.NODE_ENV === 'test') {
@@ -16,8 +16,8 @@ Meteor.methods({
         console.log('This command can only be run in a test environment.');
         console.log('Try setting NODE_ENV=test');
     }
-    },
-    initializeOrganization:function(OrganizationValue, deviceId){
+  },
+  initializeOrganization:function(OrganizationValue, deviceId){
     check(OrganizationValue, Number);
     check(deviceId, String);
 
@@ -54,12 +54,12 @@ Meteor.methods({
     } else {
         console.log('Organizations already exist.  Skipping.');
     }
-    },
-    removeOrganizationById: function(organizationId){
+  },
+  removeOrganizationById: function(organizationId){
     check(organizationId, String);
     Organizations.remove({_id: organizationId});
-    },
-    dropOrganizations: function(){
+  },
+  dropOrganizations: function(){
     if (process.env.NODE_ENV === 'test') {
         console.log('-----------------------------------------');
         console.log('Dropping Organizations... ');
@@ -70,8 +70,8 @@ Meteor.methods({
         console.log('This command can only be run in a test environment.');
         console.log('Try setting NODE_ENV=test');
     }
-    },
-    syncOrganizations: function(){
+  },
+  syncOrganizations: function(){
     if(Meteor.settings && Meteor.settings.public && Meteor.settings.public.meshNetwork && Meteor.settings.public.meshNetwork.upstreamSync){
         console.log('-----------------------------------------');
         console.log('Syncing organizations... ');
@@ -98,8 +98,8 @@ Meteor.methods({
     console.log('Syncing disabled... ');      
     }
 
-    },
-    initializeOrganizations:function(){
+  },
+  initializeOrganizations:function(){
     console.log('-----------------------------------------');
     console.log('Initializing Organizations... ');
     

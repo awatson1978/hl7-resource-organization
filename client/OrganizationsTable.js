@@ -102,7 +102,7 @@ export default class OrganizationTable extends React.Component {
 
 
     return(
-      <Table id="organizationsTable" ref='organizationsTable' responses hover >
+      <Table id="organizationsTable" ref='organizationsTable' hover >
         <thead>
           <tr>
             <th className="name hidden-on-phone">name</th>
