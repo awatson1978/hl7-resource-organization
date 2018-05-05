@@ -22,11 +22,7 @@ export {
   DynamicRoutes, 
 
   OrganizationsPage,
-  OrganizationsTable,
-
-  Organization,
-  Organizations,
-  OrganizationSchema
+  OrganizationsTable
 };
 
 
