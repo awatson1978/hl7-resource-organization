@@ -9,7 +9,7 @@
 
 
 #### API Reference  
-The resource in this package implements Organization resource schema, specified at [https://www.hl7.org/fhir/organization.html](https://www.hl7.org/fhir/organization.html). 
+The resource in this package implements Organization resource schema, specified at [https://www.hl7.org/fhir/DSTU2/organization.html](https://www.hl7.org/fhir/DSTU2/organization.html). 
 
 
 
