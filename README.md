@@ -1,4 +1,4 @@
-##clinical:hl7-resource-organization
+## clinical:hl7-resource-organization
 
 #### Licensing  
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
