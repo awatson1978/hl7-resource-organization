@@ -3,6 +3,8 @@ import { ReactMeteorData } from 'meteor/react-meteor-data';
 import ReactMixin from 'react-mixin';
 import { Table } from 'react-bootstrap';
 import Toggle from 'material-ui/Toggle';
+import { get, set } from 'lodash';
+import { Glass } from 'meteor/clinical:glass-ui';
 
 Session.setDefault('selectedOrganizations', []);
 
@@ -14,11 +16,9 @@ export default class OrganizationTable extends React.Component {
     let data = {
       style: {
         opacity: Session.get('globalOpacity'),
+        text: Glass.darkroom(),
         block: {
           maxWidth: 250
-        },
-        checkbox: {
-          //marginBottom: 16
         }
       },
       selected: [],
@@ -26,51 +26,45 @@ export default class OrganizationTable extends React.Component {
         let result = {
           _id: '',
           name: '',
-          identifier: [],
+          identifier: '',
           phone: '',
-          email: ''
+          email: '',
+          text: '',
+          city: '',
+          state: '',
+          postalCode: ''
         };
 
-        if (organization._id ) {
-          result._id = organization._id;
-        }
-        if (organization.name ) {
-          result.name = organization.name ;
-        }
-        if (organization.identifier && organization.identifier[0] && organization.identifier[0].value ) {
-          result.identifier = organization.identifier;
-        }
-        if (organization.telecom && organization.telecom[0] && organization.telecom[0].value ) {
-          result.phone = organization.telecom[0].value ;
-        }
-        if (organization.telecom && organization.telecom[1] && organization.telecom[1].value ) {
-          result.email = organization.telecom[1].value;
-        }
+        result._id = get(organization, '_id');
+        result.name = get(organization, 'name')
+        result.identifier = get(organization, 'identifier[0].value')
+    
+        let telecomArray = get(organization, 'telecom');
+        telecomArray.forEach(function(telecomRecord){
+          if(get(telecomRecord, 'system') === 'phone'){
+            result.phone = get(telecomRecord, 'value');
+          }
+          if(get(telecomRecord, 'system') === 'email'){
+            result.email = get(telecomRecord, 'value');
+          }
+        })
+    
+        result.text = get(organization, 'address[0].text')
+        result.city = get(organization, 'address[0].city')
+        result.state = get(organization, 'address[0].state')
+        result.postalCode = get(organization, 'address[0].postalCode')
+
 
         return result;
       })
     };
 
-    if (Session.get('darkroomEnabled')) {
-      data.style.color = 'black';
-      data.style.background = 'white';
-    } else {
-      data.style.color = 'white';
-      data.style.background = 'black';
-    }
+    data.style = Glass.blur(data.style);
+    data.style.appbar = Glass.darkroom(data.style.appbar);
+    data.style.tab = Glass.darkroom(data.style.tab);
 
-    // this could be another mixin
-    if (Session.get('glassBlurEnabled')) {
-      data.style.filter = 'blur(3px)';
-      data.style.WebkitFilter = 'blur(3px)';
-    }
+    if(process.env.NODE_ENV === "test") console.log("OrganizationTable[data]", data);
 
-    // this could be another mixin
-    if (Session.get('backgroundBlurEnabled')) {
-      data.style.backdropFilter = 'blur(5px)';
-    }
-
-    //console.log("data", data);
     return data;
   }
   handleChange(row, key, value) {
@@ -85,7 +79,7 @@ export default class OrganizationTable extends React.Component {
 
   rowClick(id){
     Session.set('organizationUpsert', false);
-    Session.set('selectedOrganization', id);
+    Session.set('selectedOrganizationId', id);
     Session.set('organizationPageTabIndex', 2);
   }
   render () {
@@ -93,10 +87,13 @@ export default class OrganizationTable extends React.Component {
     for (var i = 0; i < this.data.organizations.length; i++) {
       tableRows.push(
       <tr className='organizationRow' ref='med-{i}' key={i} style={{cursor: 'pointer'}} onClick={ this.rowClick.bind('this', this.data.organizations[i]._id) }>
-        <td className="name hidden-on-phone">{this.data.organizations[i].name}</td>
-        <td className="identifier hidden-on-phone">{ ( this.data.organizations[i].identifier && this.data.organizations[i].identifier[0]) ? this.data.organizations[i].identifier[0].value : '' }</td>
+        <td className="name">{this.data.organizations[i].name}</td>
+        <td className="identifier hidden-on-phone">{ this.data.organizations[i].identifier  }</td>
         <td className="phone">{this.data.organizations[i].phone}</td>
-        <td className="email">{this.data.organizations[i].email}</td>
+        <td className="email hidden-on-phone">{this.data.organizations[i].email}</td>
+        <td className="city ">{this.data.organizations[i].city}</td>
+        <td className="state">{this.data.organizations[i].state}</td>
+        <td className="postalCode hidden-on-phone">{this.data.organizations[i].postalCode}</td>
       </tr>);
     }
 
@@ -105,10 +102,13 @@ export default class OrganizationTable extends React.Component {
       <Table id="organizationsTable" ref='organizationsTable' hover >
         <thead>
           <tr>
-            <th className="name hidden-on-phone">name</th>
+            <th className="name">name</th>
             <th className="identifier hidden-on-phone">identifier</th>
             <th className="phone">phone</th>
-            <th className="email">email</th>
+            <th className="email hidden-on-phone">email</th>
+            <th className="city">city</th>
+            <th className="state">state</th>
+            <th className="postalCode hidden-on-phone">postalCode</th>
           </tr>
         </thead>
         <tbody>

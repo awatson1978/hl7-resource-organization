@@ -13,8 +13,8 @@ import ReactMixin  from 'react-mixin';
 
 Session.setDefault('organizationPageTabIndex', 1); 
 Session.setDefault('organizationSearchFilter', ''); 
-Session.setDefault('selectedOrganization', false);
-
+Session.setDefault('selectedOrganizationId', false);
+Session.setDefault('fhirVersion', 'v1.0.2');
 
 export class OrganizationsPage extends React.Component {
   getMeteorData() {
@@ -31,11 +31,15 @@ export class OrganizationsPage extends React.Component {
       },
       tabIndex: Session.get('organizationPageTabIndex'),
       organizationSearchFilter: Session.get('organizationSearchFilter'),
-      currentOrganization: Session.get('selectedOrganization')
+      selectedOrganizationId: Session.get('selectedOrganizationId'),
+      fhirVersion: Session.get('fhirVersion'),
+      selectedOrganization: false
     };
 
-    if (Meteor.user()) {
-      data.state.isLoggedIn = true;
+    if (Session.get('selectedOrganizationId')){
+      data.selectedOrganization = Organizations.findOne({_id: Session.get('selectedOrganizationId')});
+    } else {
+      data.selectedDevice = false;
     }
 
     data.style = Glass.blur(data.style);
@@ -51,7 +55,7 @@ export class OrganizationsPage extends React.Component {
   }
 
   onNewTab(){
-    Session.set('selectedOrganization', false);
+    Session.set('selectedOrganizationId', false);
     Session.set('organizationUpsert', false);
   }
 
@@ -65,13 +69,17 @@ export class OrganizationsPage extends React.Component {
             <CardText>
               <Tabs id="organizationsPageTabs" default value={this.data.tabIndex} onChange={this.handleTabChange} initialSelectedIndex={1}> 
                 <Tab className="newOrganizationTab" label='New' style={this.data.style.tab} onActive={ this.onNewTab } value={0} >
-                  <OrganizationDetail id='newOrganization' />
+                  <OrganizationDetail 
+                    id='newOrganization' />
                 </Tab>
                 <Tab className="organizationListTab" label='Organizations' onActive={this.handleActive} style={this.data.style.tab} value={1}>
                   <OrganizationTable />
                 </Tab>
                 <Tab className="organizationDetailsTab" label='Detail' onActive={this.handleActive} style={this.data.style.tab} value={2}>
-                  <OrganizationDetail id='organizationDetails' />
+                  <OrganizationDetail 
+                    id='organizationDetails' 
+                    organization={ this.data.selectedOrganization }
+                    organizationId={ this.data.selectedOrganizationId } />  
                 </Tab>
               </Tabs>
             </CardText>
@@ -82,8 +90,5 @@ export class OrganizationsPage extends React.Component {
   }
 }
 
-
-
 ReactMixin(OrganizationsPage.prototype, ReactMeteorData);
-
 export default OrganizationsPage;
