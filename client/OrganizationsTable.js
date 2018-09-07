@@ -39,6 +39,11 @@ export default class OrganizationTable extends React.Component {
         result.name = get(organization, 'name')
         result.identifier = get(organization, 'identifier[0].value')
     
+
+        //----------------------------------------------------------------
+        // TODO REFACTOR:  ContactPoint
+        // totally want to extract this
+
         let telecomArray = get(organization, 'telecom');
         telecomArray.forEach(function(telecomRecord){
           if(get(telecomRecord, 'system') === 'phone'){
@@ -48,6 +53,8 @@ export default class OrganizationTable extends React.Component {
             result.email = get(telecomRecord, 'value');
           }
         })
+
+        //----------------------------------------------------------------
     
         result.text = get(organization, 'address[0].text')
         result.city = get(organization, 'address[0].city')
