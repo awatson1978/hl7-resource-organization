@@ -364,7 +364,7 @@ export class OrganizationDetail extends React.Component {
 
       Organizations.update(
         {_id: this.state.organizationId}, {$set: fhirOrganizationData }, {
-          validate: false, 
+          validate: true, 
           filter: false, 
           removeEmptyStrings: false
         }, function(error) {
@@ -383,7 +383,7 @@ export class OrganizationDetail extends React.Component {
       if(process.env.NODE_ENV === "test") console.log("create a new organization", fhirOrganizationData);
 
       Organizations.insert(fhirOrganizationData, {
-        validate: false, 
+        validate: true, 
         filter: false, 
         removeEmptyStrings: false
       }, function(error) {
