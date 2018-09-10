@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import { get, set } from 'lodash';
 import { Row, Col } from 'react-bootstrap';
 
-Session.setDefault('organizationUpsert', false);
 
 export class OrganizationDetail extends React.Component {
   constructor(props) {
@@ -362,12 +361,8 @@ export class OrganizationDetail extends React.Component {
       if(process.env.NODE_ENV === "test") console.log("Update Organization");
       delete fhirOrganizationData._id;
 
-      Organizations.update(
-        {_id: this.state.organizationId}, {$set: fhirOrganizationData }, {
-          validate: get(Meteor, 'settings.public.defaults.schemas.validate', false), 
-          filter: get(Meteor, 'settings.public.defaults.schemas.filter', false), 
-          removeEmptyStrings: get(Meteor, 'settings.public.defaults.schemas.removeEmptyStrings', false)
-        }, function(error) {
+      Organizations._collection.update(
+        {_id: this.state.organizationId}, {$set: fhirOrganizationData }, function(error) {
           if (error) {
             console.log("error", error);
             Bert.alert(error.reason, 'danger');
@@ -375,18 +370,13 @@ export class OrganizationDetail extends React.Component {
             Bert.alert('Organization updated!', 'success');
             Session.set('organizationPageTabIndex', 1);
             Session.set('selectedOrganization', false);
-            Session.set('organizationUpsert', false);
           }
         });
     } else {
 
       if(process.env.NODE_ENV === "test") console.log("create a new organization", fhirOrganizationData);
 
-      Organizations.insert(fhirOrganizationData, {
-        validate: get(Meteor, 'settings.public.defaults.schemas.validate', false), 
-        filter: get(Meteor, 'settings.public.defaults.schemas.filter', false), 
-        removeEmptyStrings: get(Meteor, 'settings.public.defaults.schemas.removeEmptyStrings', false)
-      }, function(error) {
+      Organizations._collection.insert(fhirOrganizationData, function(error) {
         if (error) {
           console.log('Organizations.insert[error]', error)
           Bert.alert(error.reason, 'danger');
@@ -394,7 +384,6 @@ export class OrganizationDetail extends React.Component {
           Bert.alert('Organization added!', 'success');
           Session.set('organizationPageTabIndex', 1);
           Session.set('selectedOrganization', false);
-          Session.set('organizationUpsert', false);
         }
       });
     }
@@ -412,7 +401,6 @@ export class OrganizationDetail extends React.Component {
         Bert.alert('Organization deleted!', 'success');
         Session.set('organizationPageTabIndex', 1);
         Session.set('selectedOrganization', false);
-        Session.set('organizationUpsert', false);
       }
     })
   }
