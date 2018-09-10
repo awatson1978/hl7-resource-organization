@@ -364,9 +364,9 @@ export class OrganizationDetail extends React.Component {
 
       Organizations.update(
         {_id: this.state.organizationId}, {$set: fhirOrganizationData }, {
-          validate: true, 
-          filter: false, 
-          removeEmptyStrings: false
+          validate: get(Meteor, 'settings.public.defaults.schemas.validate', false), 
+          filter: get(Meteor, 'settings.public.defaults.schemas.filter', false), 
+          removeEmptyStrings: get(Meteor, 'settings.public.defaults.schemas.removeEmptyStrings', false)
         }, function(error) {
           if (error) {
             console.log("error", error);
@@ -383,9 +383,9 @@ export class OrganizationDetail extends React.Component {
       if(process.env.NODE_ENV === "test") console.log("create a new organization", fhirOrganizationData);
 
       Organizations.insert(fhirOrganizationData, {
-        validate: true, 
-        filter: false, 
-        removeEmptyStrings: false
+        validate: get(Meteor, 'settings.public.defaults.schemas.validate', false), 
+        filter: get(Meteor, 'settings.public.defaults.schemas.filter', false), 
+        removeEmptyStrings: get(Meteor, 'settings.public.defaults.schemas.removeEmptyStrings', false)
       }, function(error) {
         if (error) {
           console.log('Organizations.insert[error]', error)
