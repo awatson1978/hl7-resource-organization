@@ -394,7 +394,7 @@ export class OrganizationDetail extends React.Component {
   }
 
   handleDeleteButton(){
-    Organizations.remove({_id: this.state.organizationId}, function(error, result){
+    Organizations._collection.remove({_id: this.state.organizationId}, function(error, result){
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
