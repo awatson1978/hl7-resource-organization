@@ -8,11 +8,8 @@ import { Glass } from 'meteor/clinical:glass-ui';
 
 Session.setDefault('selectedOrganizations', []);
 
-export default class OrganizationTable extends React.Component {
+export class OrganizationTable extends React.Component {
   getMeteorData() {
-
-    // this should all be handled by props
-    // or a mixin!
     let data = {
       style: {
         opacity: Session.get('globalOpacity'),
@@ -37,14 +34,14 @@ export default class OrganizationTable extends React.Component {
 
         result._id = get(organization, '_id');
         result.name = get(organization, 'name')
-        result.identifier = get(organization, 'identifier[0].value')
+        result.identifier = get(organization, 'identifier[0].value', '')
     
 
         //----------------------------------------------------------------
         // TODO REFACTOR:  ContactPoint
         // totally want to extract this
 
-        let telecomArray = get(organization, 'telecom');
+        let telecomArray = get(organization, 'telecom', []);
         telecomArray.forEach(function(telecomRecord){
           if(get(telecomRecord, 'system') === 'phone'){
             result.phone = get(telecomRecord, 'value');
@@ -89,18 +86,103 @@ export default class OrganizationTable extends React.Component {
     Session.set('selectedOrganizationId', id);
     Session.set('organizationPageTabIndex', 2);
   }
+  renderIdentifier(identifier){
+    if (!this.props.hideIdentifier) {
+      return (
+        <td className="identifier hidden-on-phone">{ identifier }</td>
+      );
+    }
+  }
+  renderIdentifierHeader(){
+    if (!this.props.hideIdentifier) {
+      return (
+        <th className="identifier hidden-on-phone">identifier</th>
+      );
+    }
+  }
+  renderPhone(phone){
+    if (!this.props.hidePhone) {
+      return (
+        <td className="phone">{ phone }</td>
+      );
+    }
+  }
+  renderPhoneHeader(){
+    if (!this.props.hidePhone) {
+      return (
+        <th className="phone">phone</th>
+      );
+    }
+  }
+  renderEmail(email){
+    if (!this.props.hideEmail) {
+      return (
+        <td className="email hidden-on-phone">{ email }</td>
+      );
+    }
+  }
+  renderEmailHeader(){
+    if (!this.props.hideEmail) {
+      return (
+        <th className="email hidden-on-phone">email</th>
+      );
+    }
+  }
+  renderCity(city){
+    if (!this.props.hideCity) {
+      return (
+        <td className="city ">{ city }</td>
+      );
+    }
+  }
+  renderCityHeader(){
+    if (!this.props.hideCity) {
+      return (
+        <th className="city">city</th>
+      );
+    }
+  }
+  renderState(state){
+    if (!this.props.hideState) {
+      return (
+        <td className="state">{ state }</td>
+      );
+    }
+  }
+  renderStateHeader(){
+    if (!this.props.hideState) {
+      return (
+        <th className="city">city</th>
+      );
+    }
+  }
+  renderPostalCode(postalCode){
+    if (!this.props.hidePostalCode) {
+      return (
+        <td className="postalCode hidden-on-phone">{ postalCode }</td>
+      );
+    }
+  }
+  renderPostalCodeHeader(){
+    if (!this.props.hidePostalCode) {
+      return (
+        <th className="postalCode hidden-on-phone">postalCode</th>
+      );
+    }
+  }
+  
   render () {
     let tableRows = [];
     for (var i = 0; i < this.data.organizations.length; i++) {
       tableRows.push(
       <tr className='organizationRow' ref='med-{i}' key={i} style={{cursor: 'pointer'}} onClick={ this.rowClick.bind('this', this.data.organizations[i]._id) }>
         <td className="name">{this.data.organizations[i].name}</td>
-        <td className="identifier hidden-on-phone">{ this.data.organizations[i].identifier  }</td>
-        <td className="phone">{this.data.organizations[i].phone}</td>
-        <td className="email hidden-on-phone">{this.data.organizations[i].email}</td>
-        <td className="city ">{this.data.organizations[i].city}</td>
-        <td className="state">{this.data.organizations[i].state}</td>
-        <td className="postalCode hidden-on-phone">{this.data.organizations[i].postalCode}</td>
+        {this.renderIdentifier(this.data.organizations[i].identifier)}
+        {this.renderPhone(this.data.organizations[i].phone)}
+        {this.renderEmail(this.data.organizations[i].email)}
+        {this.renderCity(this.data.organizations[i].city)}
+        {this.renderState(this.data.organizations[i].state)}
+        {this.renderPostalCode(this.data.organizations[i].postalCode)}
       </tr>);
     }
 
@@ -110,12 +192,12 @@ export default class OrganizationTable extends React.Component {
         <thead>
           <tr>
             <th className="name">name</th>
-            <th className="identifier hidden-on-phone">identifier</th>
-            <th className="phone">phone</th>
-            <th className="email hidden-on-phone">email</th>
-            <th className="city">city</th>
-            <th className="state">state</th>
-            <th className="postalCode hidden-on-phone">postalCode</th>
+            {this.renderIdentifierHeader() }
+            {this.renderPhoneHeader() }
+            {this.renderEmailHeader() }
+            {this.renderCityHeader() }
+            {this.renderStateHeader() }
+            {this.renderPostalCodeHeader() }
           </tr>
         </thead>
         <tbody>
@@ -128,3 +210,4 @@ export default class OrganizationTable extends React.Component {
 
 
 ReactMixin(OrganizationTable.prototype, ReactMeteorData);
+export default OrganizationTable;
