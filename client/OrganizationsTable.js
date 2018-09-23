@@ -5,6 +5,7 @@ import { Table } from 'react-bootstrap';
 import Toggle from 'material-ui/Toggle';
 import { get, set } from 'lodash';
 import { Glass } from 'meteor/clinical:glass-ui';
+import PropTypes from 'prop-types';
 
 Session.setDefault('selectedOrganizations', []);
 
@@ -208,6 +209,15 @@ export class OrganizationTable extends React.Component {
   }
 }
 
-
+OrganizationTable.propTypes = {
+  id: PropTypes.string,
+  fhirVersion: PropTypes.string,
+  hideIdentifier: PropTypes.bool,
+  hidePhone: PropTypes.bool,
+  hideEmail: PropTypes.bool,
+  hideCity: PropTypes.bool,
+  hideState: PropTypes.bool,
+  hidePostalCode: PropTypes.bool
+};
 ReactMixin(OrganizationTable.prototype, ReactMeteorData);
 export default OrganizationTable;
