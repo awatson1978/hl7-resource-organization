@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 
 Session.setDefault('selectedOrganizations', []);
 
-export class OrganizationTable extends React.Component {
+export class OrganizationsTable extends React.Component {
   getMeteorData() {
     let data = {
       style: {
@@ -68,7 +68,7 @@ export class OrganizationTable extends React.Component {
     data.style.appbar = Glass.darkroom(data.style.appbar);
     data.style.tab = Glass.darkroom(data.style.tab);
 
-    if(process.env.NODE_ENV === "test") console.log("OrganizationTable[data]", data);
+    if(process.env.NODE_ENV === "test") console.log("OrganizationsTable[data]", data);
 
     return data;
   }
@@ -209,7 +209,7 @@ export class OrganizationTable extends React.Component {
   }
 }
 
-OrganizationTable.propTypes = {
+OrganizationsTable.propTypes = {
   id: PropTypes.string,
   fhirVersion: PropTypes.string,
   hideIdentifier: PropTypes.bool,
@@ -219,5 +219,5 @@ OrganizationTable.propTypes = {
   hideState: PropTypes.bool,
   hidePostalCode: PropTypes.bool
 };
-ReactMixin(OrganizationTable.prototype, ReactMeteorData);
-export default OrganizationTable;
+ReactMixin(OrganizationsTable.prototype, ReactMeteorData);
+export default OrganizationsTable;

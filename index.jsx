@@ -1,8 +1,7 @@
 
 
 import OrganizationsPage from './client/OrganizationsPage';
-import OrganizationTable from './client/OrganizationTable';
-import { Organization, Organizations, OrganizationSchema } from './lib/Organizations';
+import OrganizationsTable from './client/OrganizationsTable';
 
 var DynamicRoutes = [{
   'name': 'OrganizationsPage',
@@ -22,7 +21,7 @@ export {
   DynamicRoutes, 
 
   OrganizationsPage,
-  OrganizationTable
+  OrganizationsTable
 };
 
 
